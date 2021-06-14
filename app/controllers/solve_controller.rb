@@ -31,6 +31,25 @@ class SolveController < ApplicationController
         end
     end
 
+    def add_plot()
+        #
+        # どこからどこまで描画するかは, [交点の中の最小-1, 交点の中の最大+1]
+        #
+
+
+        @Left_x = -50
+        @Right_x = 50
+
+        lines_for_plot = []
+        @lines.each do |line|
+            line.show()
+            lines_for_plot.append({data:[[@Left_x, @Left_x * line.slope + line.y_intercept], [@Right_x, @Right_x * line.slope + line.y_intercept]]})
+        end
+        @data_for_plot.append(lines_for_plot)
+        # p lines_for_plot
+
+    end
+
     def top
         @data = []
         
@@ -44,6 +63,10 @@ class SolveController < ApplicationController
             @lines.append(line)
         end
         puts "lines#{@lines}"
+
+        @data_for_plot = []
+        add_plot()
+        add_plot()
 
         # solve()
 
@@ -67,6 +90,7 @@ class SolveController < ApplicationController
             puts "phase: #{loop_cnt}"
             puts @exist_lines_indices
             line_pairs = make_line_pairs() #2つ一組にする
+            
             
             line_pairs.each do |pair|
                 puts ""
@@ -111,6 +135,9 @@ class SolveController < ApplicationController
         line_pairs = []
         flag = false
         @exist_lines_indices.each do |idx|
+            #
+            # 傾きが等しい直線は, 切片の小さい方を削除する(line_pairsには入れない)
+            #
             if(flag)
                 flag = false
                 @line2 = @lines[idx]
@@ -134,7 +161,7 @@ class SolveController < ApplicationController
         y_intercept2 = line_pair.line2.y_intercept
         slope1 = line_pair.line1.slope
         slope2 = line_pair.line2.slope
-        return (y_intercept2 - y_intercept1) / (slope1 - slope2)
+        return (y_intercept2 - y_intercept1).to_f / (slope1 - slope2)
     end
 
     def get_median(x_list)

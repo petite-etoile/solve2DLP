@@ -1,2 +1,4 @@
-<h1>Tdlp#top</h1>
-<p>Find me in app/views/tdlp/top.html.erb</p>
+<% @data_for_plot.each do |lines| %>
+    <%= line_chart(lines, library:{pointRadius:0}) %>
+    <div class="space"> </div>
+<% end %>

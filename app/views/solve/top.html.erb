@@ -1,4 +1,4 @@
 <% @data_for_plot.each do |lines| %>
-    <%= line_chart(lines, library:{pointRadius:0}) %>
+    <%= line_chart(lines, max:20, min:-20, height:"800px", x_title: "xxxxx", y_title: "yyyyyy", library:{pointRadius:0}) %>
     <div class="space"> </div>
 <% end %>

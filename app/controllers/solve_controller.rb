@@ -1,17 +1,27 @@
 class SolveController < ApplicationController
     require "set"
     layout "solve"
+    #
+    # このプログラム上での, 昇順ソートされた配列Aの median,中央値は, A[ ⌊ |A| / 2 ⌋ ] (0-indexed) とする
+    #
 
     class Line
-        attr_accessor :slope, :y_intercept
-        
-        def initialize(s,y)
+        attr_accessor :slope, :y_intercept, :index, :id 
+        @@counter = 0
+        def initialize(s,y,i)
             @slope = s
             @y_intercept = y
+            @index = i
+            @id = @@counter
+            @@counter += 1
         end
 
         def show()
-            puts "y=#{@slope}x+#{@y_intercept}"
+            puts "y=#{@slope}x+#{@y_intercept}   id:#{@id}"
+        end
+
+        def val_at(x)
+            return @slope * x + @y_intercept
         end
     end
 
@@ -24,10 +34,12 @@ class SolveController < ApplicationController
         end
 
         def show()
+            puts "{"
             print "line1: "
             @line1.show()
             print "line2: "
             @line2.show()
+            puts "}"
         end
     end
 
@@ -37,38 +49,50 @@ class SolveController < ApplicationController
         #
 
 
-        @Left_x = -50
-        @Right_x = 50
+        @Left_x = -2
+        @Right_x = 2
 
         lines_for_plot = []
-        @lines.each do |line|
-            line.show()
-            lines_for_plot.append({data:[[@Left_x, @Left_x * line.slope + line.y_intercept], [@Right_x, @Right_x * line.slope + line.y_intercept]]})
+
+        #
+        # ここもあとでかわる
+        # line_indicesを使う
+        #
+        @lines.each_with_index do |line, idx|
+            if idx < @exist_line_num
+                print "exist  "
+                line.show()
+            else
+                print "removed  "
+                line.show()
+            end
+            lines_for_plot.append({data:[[@Left_x, line.val_at(@Left_x)], [@Right_x, line.val_at(@Right_x)]]})
         end
         @data_for_plot.append(lines_for_plot)
-        # p lines_for_plot
-
     end
 
     def top
         @data = []
         
-        #直線の数
-        @line_num = 5
+        @line_num = 10 #直線の数
+        @exist_line_num = @line_num #未削除の直線の数
+        # @lines_indices = [*0...@line_num] #直線の添え字
+        # p @lines_indices
 
         srand(0)
-        @lines = []
-        @line_num.times do 
-            line = Line.new(rand(-10..10), rand(-10..10))
+        @lines = [] #@exist_line_num番目以前は未削除, それより後ろは削除済とする
+        (0...@line_num).each do |idx|
+            line = Line.new(rand(-10..10), rand(-10..10), idx)
             @lines.append(line)
         end
-        puts "lines#{@lines}"
 
         @data_for_plot = []
         add_plot()
         add_plot()
 
-        # solve()
+        solve()
+
+        add_plot()
 
         #
         # setを使うことによるO(logN)の落とし方
@@ -82,12 +106,10 @@ class SolveController < ApplicationController
         # ここに傾き0の直線に対する処理が入る
         #
 
-        @exist_lines_indices = [*0...@line_num].to_set #まだ削除されていない直線の添字の集合
-        puts "exist#{@exist_lines_indices}"
         debug_flag = true
         loop_cnt = 0
-        while @exist_lines_indices.size() > 2 and debug_flag do 
-            puts "phase: #{loop_cnt}"
+        while @exist_line_num > 2 and debug_flag do 
+            puts "-----------------\nphase: #{loop_cnt}"
             puts @exist_lines_indices
             line_pairs = make_line_pairs() #2つ一組にする
             
@@ -105,25 +127,20 @@ class SolveController < ApplicationController
             puts "交点のx座標 #{intersection_x_list}"
 
             #交点のx座標の中央値を求める
-            median_x = get_median(intersection_x_list)
+            x_median = get_kth_element(intersection_x_list, intersection_x_list.size()/2)
+            puts "#{x_median} == #{intersection_x_list.sort()[intersection_x_list.size()/2]}"
+            if(x_median != intersection_x_list.sort()[intersection_x_list.size()/2])
+                raise RuntimeError, "中央値を求めるターンで期待されたものが得られてません"
+            end
 
-            #直線ペアの中でmedian_xで交わる直線のうち, 最大,最小の傾きを求める
+            #最適解がx_medianより右にあるのか左にあるのか, あるいはx_medianが最適解なのか求める
+            opt_direction = get_opt_direction(x_median)
+            p opt_direction
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+            if(opt_direction == "OPT")
+                break
+            end
+            delete_lines( opt_direction,  intersection_x_list, line_pairs, x_median)
             
             
             debug_flag = false # for debug
@@ -134,7 +151,7 @@ class SolveController < ApplicationController
     def make_line_pairs
         line_pairs = []
         flag = false
-        @exist_lines_indices.each do |idx|
+        (0...@exist_line_num).each do |idx|
             #
             # 傾きが等しい直線は, 切片の小さい方を削除する(line_pairsには入れない)
             #
@@ -142,7 +159,6 @@ class SolveController < ApplicationController
                 flag = false
                 @line2 = @lines[idx]
                 line_pairs.append(LinePair.new(@line1, @line2))
-                line_pairs[-1].show()
             else
                 flag = true
                 @line1 = @lines[idx]
@@ -153,7 +169,7 @@ class SolveController < ApplicationController
 
     #交点のx座標を返す
     def get_intersection_x(line_pair)
-        if(not line_pair.is_a?(LinePair))
+        unless(line_pair.is_a?(LinePair))
             raise RuntimeError, "get_intersection_x関数の引数はLinePairクラスであることを期待されます"
         end
 
@@ -164,7 +180,11 @@ class SolveController < ApplicationController
         return (y_intercept2 - y_intercept1).to_f / (slope1 - slope2)
     end
 
-    def get_median(x_list)
+    #x_listの中でk番目の要素を返す
+    def get_kth_element(x_list, k)
+        if( x_list.size() < 10)
+            return x_list.sort()[k]
+        end
         #5個ずつのグループに分ける
         groups = []
         x_list.each_with_index do |x, idx|
@@ -178,23 +198,120 @@ class SolveController < ApplicationController
         #各グループの中央値を求める
         medians = []
         groups.each do |group|
-            puts group
             group.sort!()
-            puts group
             if(group.size == 5) 
                 medians.append(group[2])
             end
         end
 
+        median_of_medians = get_kth_element(medians, medians.size() / 2) #{各グループの中央値}の中央値
 
+        smallers = [] #各グループの中央値の中央値より小さい
+        equals = [] #各グループの中央値の中央値と等しい
+        largers = [] #各グループの中央値の中央値より大きい
 
-    
-        
+        x_list.each do |x|
+            if(x < median_of_medians)
+                smallers.append(x)
+            elsif ( x == median_of_medians)
+                equals.append(x)
+            else
+                largers.append(x)
+            end
+        end
+
+        if( k < smallers.size() ) # x_listのk番目は, smallersに含まれている
+            return get_kth_element( smallers, k) # smallersのk番目
+        elsif ( k <= smallers.size() + equals.size()) # x_listのk番目は, {各グループの中央値}の中央値と等しい
+            return median_of_medians
+        else #x_listのk番目は, largersに含まれている
+            return get_kth_element( largers, k - smallers.size() - equals.size() )
+        end
     end
 
+    #最適解がx_medianより右にあるのか左にあるのか, あるいはx_medianが最適解なのかを返す
+    def get_opt_direction(x_median)
+        #
+        # まず, 削除されてない直線のうち, x_medianでの値が最大な直線の中の, 傾きの最大と最小を求める
+        # 例) 
+        #     x_median = 1
+        #     直線1: y= x+1
+        #     直線2: y=3x-1
+        #     直線3: y=-x-1
+        #
+        #     x=1での値はそれぞれ, 2,2,0である
+        #     最大値である2をとる直線1,直線2の中で傾きの最大,最小はそれぞれ 3,1である
+        #
 
-
+        unless(x_median.is_a?(Float))
+            p "x_median:#{x_median}"
+            raise RuntimeError, "x_medianはFloat型であることが期待されます"
+        end
+        y_max = -Float::INFINITY 
+        maximum_indices = [] #最大値をとる直線の添え字リスト
     
+        (0...@exist_line_num).each do |idx|
+            y = @lines[idx].val_at(x_median)
+            if(y_max < y)
+                y_max = y
+                maximum_indices = [idx]
+            elsif(y_max == y)
+                maximum_indices.append(idx)
+            end
+        end
 
+        slope_max_idx = maximum_indices.max{|a,b| @lines[a].slope <=>@lines[b].slope }
+        slope_min_idx = maximum_indices.min{|a,b| @lines[a].slope <=>@lines[b].slope }
+        slope_max = @lines[slope_max_idx].slope #傾きの最大
+        slope_min = @lines[slope_min_idx].slope #傾きの最小
 
+        p slope_max,slope_min 
+
+        if(slope_max * slope_min <= 0) # x_medianが最適解 傾き0でもOK
+            direction = "OPT"
+        elsif(slope_min > 0) # x_medianより左に最適解
+            direction = "LEFT"
+        else # x_medianより右最適解
+            direction = "RIGHT"
+        end
+        return direction
+    end
+
+    def delete_lines(opt_direction,  intersection_x_list, line_pairs, x_median)
+        unless opt_direction.in?(["LEFT", "RIGHT"]) 
+            raise RuntimeError, "opt_directionは \"LEFT\" \"RIGHT\"のいずれかであることが期待されます"
+        end
+        p opt_direction
+        intersection_x_list.zip(line_pairs) do |x, line_pair|
+            slope1 = line_pair.line1.slope
+            slope2 = line_pair.line2.slope
+            
+            if(opt_direction == "LEFT" and x_median <= x) 
+                # 最適解がx_medianより左にあるので, x_medianより右で交差する直線ペアのうち, 傾きの値が大きい方は消す
+                if( slope1 > slope2)
+                    delete_line(line_pair.line1)
+                else
+                    delete_line(line_pair.line2)
+                end
+            elsif(opt_direction == "RIGHT" and ( x <= x_median ))
+                # 最適解がx_medianより右にあるので, x_medianより左で交差する直線ペアのうち, 傾きの値が小さい方は消す
+                if( slope1 < slope2)
+                    delete_line(line_pair.line1)
+                else
+                    delete_line(line_pair.line2)
+                end
+            end
+        end
+    end
+
+    def delete_line(line)
+        unless(line.is_a?(Line))
+            raise RuntimeError, "lineはLine型であることが期待されます"
+        end
+        print "delete:"
+        line.show()
+        
+        @lines[line.index], @lines[@exist_line_num-1] = @lines[@exist_line_num-1], @lines[line.index]
+        @exist_line_num -= 1
+    end
 end

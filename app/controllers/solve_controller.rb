@@ -49,10 +49,11 @@ class SolveController < ApplicationController
         #
 
 
-        @Left_x = -2
-        @Right_x = 2
+        @Left_x = -10
+        @Right_x = 10
 
         lines_for_plot = []
+        colors = []
 
         #
         # ここもあとでかわる
@@ -62,16 +63,28 @@ class SolveController < ApplicationController
             if idx < @exist_line_num
                 print "exist  "
                 line.show()
+                color = "red"
             else
                 print "removed  "
                 line.show()
+                color = "gray"
             end
             lines_for_plot.append({data:[[@Left_x, line.val_at(@Left_x)], [@Right_x, line.val_at(@Right_x)]]})
+            colors.append(color)
         end
         @data_for_plot.append(lines_for_plot)
+        @colors_for_plot.append(colors)
     end
 
     def top
+        p ""
+        p ""
+        p ""
+        p ""
+        p ""
+        p ""
+        p ""
+        @@counter = 0
         @data = []
         
         @line_num = 10 #直線の数
@@ -87,7 +100,7 @@ class SolveController < ApplicationController
         end
 
         @data_for_plot = []
-        add_plot()
+        @colors_for_plot = []
         add_plot()
 
         solve()
@@ -110,7 +123,7 @@ class SolveController < ApplicationController
         loop_cnt = 0
         while @exist_line_num > 2 and debug_flag do 
             puts "-----------------\nphase: #{loop_cnt}"
-            puts @exist_lines_indices
+            puts @exist_line_num
             line_pairs = make_line_pairs() #2つ一組にする
             
             
@@ -142,8 +155,17 @@ class SolveController < ApplicationController
             end
             delete_lines( opt_direction,  intersection_x_list, line_pairs, x_median)
             
+
+            @lines.each_with_index do |line, idx|
+                puts "#{idx} #{line.index}"
+                
+            end
             
-            debug_flag = false # for debug
+
+            add_plot()
+            loop_cnt += 1
+            
+            # debug_flag = false # for debug
         end
     end
 
@@ -310,8 +332,13 @@ class SolveController < ApplicationController
         end
         print "delete:"
         line.show()
+
+        index1 = line.index
+        index2 = @exist_line_num-1
         
-        @lines[line.index], @lines[@exist_line_num-1] = @lines[@exist_line_num-1], @lines[line.index]
+        @lines[index1], @lines[index2] = @lines[index2], @lines[index1]
+        @lines[index1].index, @lines[index2].index = @lines[index2].index, @lines[index1].index
+
         @exist_line_num -= 1
     end
 end

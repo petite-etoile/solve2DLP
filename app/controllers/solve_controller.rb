@@ -63,11 +63,11 @@ class SolveController < ApplicationController
             if idx < @exist_line_num
                 print "exist  "
                 line.show()
-                color = "red"
+                color = "#000000"
             else
                 print "removed  "
                 line.show()
-                color = "gray"
+                color = "DDDDDD"
             end
             lines_for_plot.append({data:[[@Left_x, line.val_at(@Left_x)], [@Right_x, line.val_at(@Right_x)]]})
             colors.append(color)
@@ -76,18 +76,41 @@ class SolveController < ApplicationController
         @colors_for_plot.append(colors)
     end
 
+    # #rgbの数値を16進数カラーコードに変換する
+    # def rgb_to_hex_color_code(red, green, blue)
+    #     return format("#%02X%02X%02X",red,green,blue)
+    # end
+
+    # #16進数カラーコードを必要な分列挙する
+    # def enumerate_color
+    #     @color_list = []
+
+    #     cube_root = @line_num.pow(1/3.0).ceil() #三乗根
+    #     p "cube_root:#{cube_root}"
+
+    #     (0...cube_root).each do |r_idx|
+    #         red = 255 * r_idx / (cube_root - 1)
+    #         (0...cube_root).each do |g_idx|
+    #             green = 255 * g_idx / (cube_root - 1)
+    #             (0...cube_root).each do |b_idx|
+    #                 blue = 255 * b_idx / (cube_root - 1)
+    #                 p "#{red}, #{green}, #{blue}"
+    #                 @color_list.append(rgb_to_hex_color_code(red, green, blue))
+    #             end
+    #         end
+    #     end
+    #     @color_list.shuffle!()
+    # end
+
     def top
-        p ""
-        p ""
-        p ""
-        p ""
-        p ""
-        p ""
-        p ""
+        puts "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nv"
         @@counter = 0
         @data = []
         
         @line_num = 10 #直線の数
+        if(@line_num == 1)
+            raise RuntimeError, "直線の数は2本以上"
+        end
         @exist_line_num = @line_num #未削除の直線の数
         # @lines_indices = [*0...@line_num] #直線の添え字
         # p @lines_indices
@@ -101,6 +124,7 @@ class SolveController < ApplicationController
 
         @data_for_plot = []
         @colors_for_plot = []
+
         add_plot()
 
         solve()

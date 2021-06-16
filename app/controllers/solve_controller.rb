@@ -7,13 +7,13 @@ class SolveController < ApplicationController
 
     class Line
         attr_accessor :slope, :y_intercept, :index, :id 
-        @@counter = 0
+        @@line_counter = 0
         def initialize(s,y,i)
             @slope = s
             @y_intercept = y
             @index = i
-            @id = @@counter
-            @@counter += 1
+            @id = @@line_counter
+            @@line_counter += 1
         end
 
         def show()
@@ -104,8 +104,17 @@ class SolveController < ApplicationController
 
     def top
         puts "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nv"
-        @@counter = 0
-        @data = []
+        @data_for_plot = []
+        @colors_for_plot = []
+
+        if(request.post?)
+            puts "POST"
+            puts params[:"2dlp_text"]
+        else
+            puts "GET"
+        end
+
+        @@line_counter = 0
         
         @line_num = 10 #直線の数
         if(@line_num == 1)
@@ -122,8 +131,6 @@ class SolveController < ApplicationController
             @lines.append(line)
         end
 
-        @data_for_plot = []
-        @colors_for_plot = []
 
         add_plot()
 

@@ -1,0 +1,182 @@
+% \documentclass[a4paper,11pt]{jsarticle}
+\documentclass[dvipdfmx,12pt]{jsarticle}% 適切なドライバ指定が必要
+\usepackage[top=30truemm,bottom=30truemm,left=30truemm,right=30truemm]{geometry}
+
+% 数式
+\usepackage{amsmath,amsfonts,amssymb}
+\usepackage{mathrsfs}
+\usepackage{bm}
+\usepackage{ascmac}
+% 画像
+\usepackage[dvipdfmx]{graphicx}
+% リンク
+\usepackage[dvipdfmx]{hyperref}
+\newtheorem{theorem}{定理}
+\newtheorem{lemma}{補題}
+\newtheorem{proof}{証明}
+% 図形
+\usepackage[svgnames]{xcolor}% tikzより前に読み込む必要あり
+\usepackage{tikz}
+\usetikzlibrary{graphs}
+%色
+\usepackage{colortbl}
+
+\setcounter{page}{0}
+
+
+\begin{document}
+
+
+
+
+\section{２次元線形計画問題}
+一般には, 2次元の線形計画問題は以下のように表せます.
+
+
+\begin{equation*}
+  \begin{aligned}
+      & \text{min}
+          & c_1x_1 + c_2x_2& \\
+      & \text{s.t.}
+          & a_{i1}x_1 + a_{i2}x_2 &\geq a_{i0} (i\in\{1,...,N\})
+  \end{aligned}
+\end{equation*}
+
+s.t.とはsubject toのことで, これを満たすようなもののうち, ${c_1x_1 + c_2x_2}$ が最小となる$x_1,x_2$ を求める問題となります.
+
+$a_{i1}x_1 + a_{i2}x_2 \geq a_{a0}$ を制約条件, これらの不等式が満たす領域を{\bf 実行可能領域}といい,
+実行可能領域を$(x_1,x_2)$平面に図示すると, 実行可能領域が有界なら凸多角形になります.
+
+目的関数が$cx+dy$のとき, 傾きがx軸と平行になるようにx軸, y軸を回転すると, 
+
+
+\begin{align*}
+  cx+dy&=e \\
+  y&= -\frac{c}{d}x+\frac{e}{d}
+\end{align*}
+
+となり, 一般性を失うことなく次のような形の問題として考えることができます.
+
+\begin{equation*}
+  \begin{aligned}
+      & \text{min}
+          & y& \\
+      & \text{s.t.}
+          & y \geq a_ix + b_i 
+          &(i \in \{1,...,N\})
+  \end{aligned}
+\end{equation*}
+
+
+
+\section{縮小法}
+縮小法の基盤となる考え方は, **一定割合減らす**ということです.
+一回の操作で残っているデータを$\alpha (0\leq \alpha \leq 1)$倍に減らすことができるとします.
+
+目的の数までデータを減らすのにかかる最悪計算量は無限等比級数の和を考えて
+
+
+\begin{eqnarray*}
+  \sum_{k=0}^{\infty} α^kn&=&\frac{n}{1-α}\\
+    &=&cn ~~ (c\in \boldsymbol{R})
+\end{eqnarray*}
+
+
+となるので, 最悪計算量は$O(n)$となる
+
+
+\newpage
+
+\section{最適解を求めるアルゴリズム}
+前書きが長くなりましたが, 本題です.
+
+
+前述の通り, 今回は次のような問題を考えます.
+
+\begin{equation*}
+  \begin{aligned}
+      & \text{min}
+          & y& \\
+      & \text{s.t.}
+          & y \geq a_ix + b_i 
+          &(i \in \{1,...,N\})
+  \end{aligned}
+\end{equation*}
+
+
+
+
+前処理として, 傾きが同じ複数の直線に関して, 冗長なものは除いてしまうことができます.具体的には
+
+\begin{eqnarray*}
+  \qquad y\geq ax+b \\
+  \qquad y\geq ax+c
+\end{eqnarray*}
+
+
+$b>c$ならば, $ y\geq ax+c$は冗長なので削除していい.
+よって, $\{a_i|i \in \{1,...,N\}\}$はすべて異なるものとして考えることとします.
+
+\subsection{直線のペアを作る}
+$n^,$本の制約条件(直線)を2本ずつの組にする.
+
+$m=\lfloor \frac{n^{,}}{2} \rfloor$個の交点ができる
+
+$x_{ij}$:=$l_i$と$l_j$の交点のx座標 ($l_i,l_j$:直線)
+
+計算量:$O(n^{,})$
+
+\subsection{中央値を求める}
+$\{x_{ij} | ~\forall{i,j}\}$の中央値$\lfloor m/2 \rfloor$番目を$x_0$とする.\\
+計算量:$O(n^{,})$・・・(※)
+
+(※ 中央値を求めるときに, "ソートして, 真ん中にあるのが中央値"としたくなりますが, ソートは$O(n^{,}\log n^{,})$かかってしまいますので, {\bf 縮小法}で$O(n^{,})$で求めます. 詳細は省きます. )
+
+\newpage
+\subsection{最適解の方向を求める}
+\begin{eqnarray*}
+  I &:= \{i\:|\: a_ix_0 + b_i = f(x_0) \} \\
+  a^+ &:= max\{ a_i\:|\:i\in I\} \\
+  a^- &:= min\{ a_i\:|\:i\in I\} 
+\end{eqnarray*}
+
+このとき, 最適解が$x_0$に対してどちらにあるかは次のようにわかる
+\begin{eqnarray*}
+  a^+ > 0　\Rightarrow x^* \leq x_0 \\
+  a^- < 0　\Rightarrow x^* \geq x_0 
+\end{eqnarray*}
+
+よって
+\begin{eqnarray*}
+  a^- a^+ < 0　\Rightarrow x^* = x_0 
+\end{eqnarray*}
+計算量:$O(n^{,})$
+
+
+\subsection{冗長な直線の削除}
+\begin{itemize}
+  \item $x^* \leq x_0$ならば$x_{ij} \geq x_0$となる$i,j$に対して
+  \begin{itemize}
+    \item $a_i>a_j$なら$l_i$は冗長
+    \item $a_i<a_j$なら$l_j$は冗長
+  \end{itemize}
+  \item $x^* \geq x_0$ならば$x_{ij} \leq x_0$となる$i,j$に対して
+  \begin{itemize}
+    \item $a_i<a_j$なら$l_i$は冗長
+    \item $a_i>a_j$なら$l_j$は冗長
+  \end{itemize}
+\end{itemize}
+
+
+このとき, $\lceil\frac{m}{2}\rceil$本の直線を削除している.
+$m=\lfloor \frac{n^{,}}{2} \rfloor$だったので, 1フェイズで$3/4$倍に減らすことができます.\\
+計算量:$O(n^{,})$
+
+
+\subsection{計算量}
+直線が2本になるまで3.1 から 3.4を繰り返します.
+全体の計算量は, 2章縮小法で述べたとおり, $O(n)$となります.
+
+
+
+\end{document}

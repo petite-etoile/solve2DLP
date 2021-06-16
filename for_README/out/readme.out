@@ -1,0 +1,8 @@
+\BOOKMARK [1][-]{section.1}{２次元線形計画問題}{}% 1
+\BOOKMARK [1][-]{section.2}{縮小法}{}% 2
+\BOOKMARK [1][-]{section.3}{最適解を求めるアルゴリズム}{}% 3
+\BOOKMARK [2][-]{subsection.3.1}{直線のペアを作る}{section.3}% 4
+\BOOKMARK [2][-]{subsection.3.2}{中央値を求める}{section.3}% 5
+\BOOKMARK [2][-]{subsection.3.3}{最適解の方向を求める}{section.3}% 6
+\BOOKMARK [2][-]{subsection.3.4}{冗長な直線の削除}{section.3}% 7
+\BOOKMARK [2][-]{subsection.3.5}{計算量}{section.3}% 8

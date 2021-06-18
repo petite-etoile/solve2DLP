@@ -1,6 +1,6 @@
 <%= form_tag({controller: "solve", action: "top"}, multipart: true) do%>
     <div class = "form-group">
-        <%= text_area_tag(:"2dlp_text", "", {rows:10, class:"form-control", placeholder:@default_form_text})%>
+        <%= text_area_tag(:"2dlp_text", @default_form_text, {rows:10, class:"form-control"})%>
         <%p @default_form_text%>
         <%= file_field_tag(:"2dlp_file", class:"form-control w-50 float-left")%>
         <%= submit_tag("計算", class: "btn btn-primary float-right w-25") %>

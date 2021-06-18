@@ -76,7 +76,6 @@ class SolveController < ApplicationController
                 return 
             end
         else
-            @default_form_text = "ここに入力"
             sample_input()
             @messages = ["サンプル", "#{@@TAB}min y", "#{@@TAB}s.t."]
             add_LP_message()
@@ -165,6 +164,11 @@ class SolveController < ApplicationController
             line = Line.new(rand(-10..10), rand(-10..10), idx)
             @lines.append(line)
         end
+
+        file = File.join(Rails.root, "public", "sample_in.txt")
+        @default_form_text = File.read(file)
+        input(@default_form_text.split("\n"))
+
     end
 
     # 入力されたLPの表示

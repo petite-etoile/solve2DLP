@@ -6,10 +6,15 @@
     </div>
 <% end %>
 
+<% @messages.each do |message|%>
+    <br>
+    <pre> <%= message %> </pre>
+<%end %>
+
 
 <%counter = 0%>
 <% @data_for_plot.zip(@colors_for_plot) do |lines, colors| %>
-    <%=counter%>
+    phase <%=counter%>
     <%counter+=1%>
     <%= line_chart(lines, colors:colors, max:50, min:-50, height:"800px", x_title: "xxxxx", y_title: "yyyyyy", library:{pointRadius:0}) %>
     <div class="space"> </div>

@@ -1,10 +1,14 @@
 
-<%= form_tag(controller: "solve", action: "top") do%>
+<%= form_tag({controller: "solve", action: "top"}, multipart: true) do%>
     <div class = "form-group">
-        <%= text_area_tag("2dlp_text", "ここに入力", {rows:10, class:"form-control"})%>
+        <%= text_area_tag(:"2dlp_text", @default_form_text, {rows:10, class:"form-control"})%>
+        <%p @default_form_text%>
+        <%= file_field_tag(:"2dlp_file")%>
         <%= submit_tag("計算", class: "btn btn-primary") %>
     </div>
 <% end %>
+
+
 
 <% @messages.each do |message|%>
     <br>

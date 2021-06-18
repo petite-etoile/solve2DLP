@@ -43,6 +43,57 @@ class SolveController < ApplicationController
         end
     end
 
+    
+
+    def top
+        puts "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nv"
+        @data_for_plot = []
+        @colors_for_plot = []
+        @@TAB = "    "
+
+        if(request.post?)
+            puts "POST"
+            puts params[:"2dlp_text"]
+
+            
+            if(params[:"2dlp_file"])
+                input_string = params[:"2dlp_file"].read
+            else
+                input_string = params[:"2dlp_text"]
+            end
+            valid_input = input(input_string.split("\n"))
+            @default_form_text = input_string
+
+
+            if(valid_input)
+                @messages = ["入力された問題", "#{@@TAB}min y", "#{@@TAB}s.t."]
+                add_LP_message()
+            else
+                @messages = ["入力形式が正しくありません"]
+                return 
+            end
+        else
+            @default_form_text = "ここに入力"
+            sample_input()
+            @messages = ["サンプル", "#{@@TAB}min y", "#{@@TAB}s.t."]
+            add_LP_message()
+            
+            puts "GET"
+        end
+
+        @@line_counter = 0
+        
+        
+
+
+        add_plot()
+
+        solve()
+
+        add_plot()
+
+    end
+
     def add_plot()
         #
         # どこからどこまで描画するかは, [交点の中の最小-1, 交点の中の最大+1]
@@ -76,10 +127,9 @@ class SolveController < ApplicationController
         @colors_for_plot.append(colors)
     end
 
+    # 入力を読んで, 解析
     def input(arr)
         begin
-            
-            
             @line_num = arr[0].to_i
             puts @line_num
             @exist_line_num = @line_num
@@ -103,6 +153,7 @@ class SolveController < ApplicationController
 
     end
 
+    # サンプルの処理(GETのときのみ)
     def sample_input()
         @line_num = 10 #直線の数
         
@@ -116,6 +167,7 @@ class SolveController < ApplicationController
         end
     end
 
+    # 入力されたLPの表示
     def add_LP_message
         @lines.each do |line|
             if(line.y_intercept.positive?)
@@ -128,55 +180,8 @@ class SolveController < ApplicationController
         end
     end
 
-    def top
-        puts "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nv"
-        @data_for_plot = []
-        @colors_for_plot = []
-        @@TAB = "    "
-
-        if(request.post?)
-            puts "POST"
-            puts params[:"2dlp_text"]
-
-            valid_input = input(params[:"2dlp_text"].split("\n"))
-            if(valid_input)
-                @messages = ["入力された問題", "#{@@TAB}min y", "#{@@TAB}s.t."]
-                add_LP_message()
-
-            else
-                @messages = ["入力形式が正しくありません"]
-                return 
-            end
-        else
-            sample_input()
-            @messages = ["サンプル"]
-            add_LP_message
-            
-            puts "GET"
-        end
-
-        @@line_counter = 0
-        
-        
-
-
-        add_plot()
-
-        solve()
-
-        add_plot()
-
-        #
-        # setを使うことによるO(logN)の落とし方
-        # ⬇︎
-        # delete -> setを使う/一番うしろに送る
-        #
-    end
-
+    # 2次元LPを
     def solve
-        #
-        # ここに傾き0の直線に対する処理が入る
-        #
 
         debug_flag = true
         loop_cnt = 0
@@ -228,6 +233,8 @@ class SolveController < ApplicationController
             # debug_flag = false # for debug
         end
     end
+
+
 
     #まだ削除されてない直線を2つ1組にする
     def make_line_pairs

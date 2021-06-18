@@ -3,12 +3,21 @@
 // You can use Sass (SCSS) here: https://sass-lang.com/
 .header{
     background-color: black;
-}
-
-.app-title{
     width: 50%;
 }
 
 .space{
     height:30px;
+}
+
+.margin-0{
+    margin:0 !important;
+}
+
+.padding-0{
+    padding:0 !important;
+}
+
+body {
+    padding-top:80px;
 }

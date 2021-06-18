@@ -46,6 +46,7 @@ class SolveController < ApplicationController
     
 
     def top
+        @page = "top"
         puts "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nv"
         @data_for_plot = []
         @colors_for_plot = []
@@ -419,5 +420,13 @@ class SolveController < ApplicationController
         @lines[index1].index, @lines[index2].index = @lines[index2].index, @lines[index1].index
 
         @exist_line_num -= 1
+    end
+
+    def about
+        @page = "about"
+    end
+
+    def howto
+        @page = "howto"
     end
 end

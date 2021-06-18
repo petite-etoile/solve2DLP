@@ -3,4 +3,6 @@ Rails.application.routes.draw do
   root "solve#top"
   post "solve/top"
   post "/" => "solve#top"
+  get "/howto" => "solve#howto"
+  get "/about" => "solve#about"
 end

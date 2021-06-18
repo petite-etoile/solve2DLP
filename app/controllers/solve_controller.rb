@@ -53,7 +53,9 @@ class SolveController < ApplicationController
 
         if(request.post?)
             puts "POST"
+            puts "入力↓"
             puts params[:"2dlp_text"]
+            puts ""
 
             
             if(params[:"2dlp_file"])
@@ -131,7 +133,6 @@ class SolveController < ApplicationController
     def input(arr)
         begin
             @line_num = arr[0].to_i
-            puts @line_num
             @exist_line_num = @line_num
 
             if(@line_num <= 1)
@@ -140,9 +141,7 @@ class SolveController < ApplicationController
 
             @lines = []
             (1..@line_num).each do |idx|
-                p arr[idx].split(" ")
                 slope, y_intercept = arr[idx].split(" ").map(&:to_f)
-                p [slope, y_intercept]
                 @lines.append(Line.new(slope, y_intercept, idx-1))
             end
             return true
@@ -234,25 +233,38 @@ class SolveController < ApplicationController
         end
     end
 
-
-
     #まだ削除されてない直線を2つ1組にする
     def make_line_pairs
         line_pairs = []
         flag = false
+        waste_lines = []
         (0...@exist_line_num).each do |idx|
             #
             # 傾きが等しい直線は, 切片の小さい方を削除する(line_pairsには入れない)
             #
             if(flag)
-                flag = false
                 @line2 = @lines[idx]
+                if(@line1.slope == @line2.slope)
+                    if(@line1.y_intercept < @line2.y_intercept)
+                        waste_lines.append(@line1)
+                        @line1 = @line2
+                    else
+                        waste_lines.append(@line2)
+                    end
+                    next
+                end
+                flag = false
                 line_pairs.append(LinePair.new(@line1, @line2))
             else
                 flag = true
                 @line1 = @lines[idx]
             end
         end
+
+        waste_lines.each do |line|
+            delete_line(line)
+        end
+        puts "size:#{line_pairs.size()}"
         return line_pairs
     end
 
@@ -354,7 +366,7 @@ class SolveController < ApplicationController
         slope_max = @lines[slope_max_idx].slope #傾きの最大
         slope_min = @lines[slope_min_idx].slope #傾きの最小
 
-        p slope_max,slope_min 
+        p "#{x_median}でy = #{y_max}をとる直線のうちの傾き最大, 最小: #{slope_max}, #{slope_min}"
 
         if(slope_max * slope_min <= 0) # x_medianが最適解 傾き0でもOK
             direction = "OPT"
@@ -370,7 +382,7 @@ class SolveController < ApplicationController
         unless opt_direction.in?(["LEFT", "RIGHT"]) 
             raise RuntimeError, "opt_directionは \"LEFT\" \"RIGHT\"のいずれかであることが期待されます"
         end
-        p opt_direction
+        p "最適解は, #{x_median}より#{opt_direction == "LEFT" ? "左" : "右"}"
         intersection_x_list.zip(line_pairs) do |x, line_pair|
             slope1 = line_pair.line1.slope
             slope2 = line_pair.line2.slope

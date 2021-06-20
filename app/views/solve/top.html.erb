@@ -17,8 +17,11 @@
 
 <%counter = 0%>
 <% @data_for_plot.zip(@colors_for_plot) do |lines, colors| %>
-    phase <%=counter%>
+    phase <%=counter %>
     <%counter+=1%>
-    <%= line_chart(lines, colors:colors, max:50, min:-50, height:"800px", x_title: "xxxxx", y_title: "yyyyyy", library:{pointRadius:0}) %>
+    <% p lines%>
+    <%# <%= line_chart(lines, colors:colors, max:@max_y, min:@min_y, xmax:@max_x, xmin:@min_x , height:"800px", x_title: "x", y_title: "y", library:{pointRadius:0}) %> %>
+    <%= line_chart(lines, colors:colors, max:@max_y, min:@min_y,  height:"800px", x_title: "x", y_title: "y", library:{pointRadius:0}, legend:"top") %>
+    <%# <%= line_chart(lines, colors:colors, max:@max_y, min:@min_y, height:"800px", x_title: "x", y_title: "y", library:{pointRadius:0}) %> %>
     <div class="space"> </div>
 <% end %>

@@ -17,20 +17,43 @@ class SolveController < ApplicationController
         end
 
         def show()
-            puts "y=#{@slope}x+#{@y_intercept}   id:#{@id}"
+            puts "#{form()}   id:#{@id}"
         end
 
         def val_at(x)
             return @slope * x + @y_intercept
         end
+
+        def form()
+            if(@y_intercept.positive?)
+                return "y≥#{@slope}x+#{@y_intercept}"
+            elsif(@y_intercept.negative?)
+                return "y≥#{@slope}x#{@y_intercept}"
+            else
+                return "y≥#{@slope}x"
+            end
+        end
+    end
+
+    class Point
+        attr_accessor :x, :y
+        def initialize(x,y)
+            @x = x
+            @y = y
+        end
+
+        def show()
+            puts "(#{@x}, #{@y})"
+        end
     end
 
     class LinePair
-        attr_accessor :line1, :line2
+        attr_accessor :line1, :line2, :intersection
 
         def initialize(l1, l2)
             @line1 = l1
             @line2 = l2
+            @intersection = get_intersection()
         end
 
         def show()
@@ -41,9 +64,94 @@ class SolveController < ApplicationController
             @line2.show()
             puts "}"
         end
+
+        private
+
+        #交点の座標を返す
+        def get_intersection()
+            if(@line1.slope == @line2.slope)
+                raise RuntimeError, "同じ傾きの直線をペアにすることはできません"
+            end
+
+            x = (@line2.y_intercept - @line1.y_intercept).to_f / (@line1.slope - @line2.slope)
+            y = @line1.val_at(x)
+
+            return Point.new(x,y)
+        end
+
     end
 
-    
+    class PhaseInfo
+        attr_accessor :ph_lines, :ph_exist_line_num, :ph_intersections
+        @@min_x = -1 
+        @@max_x = 1
+        @@min_y = -1
+        @@max_y = 1
+
+        #
+        # 交点がない場合は空の配列を渡す
+        # オーバーロードさせてほしいなrubyさん
+        #
+        def initialize(lines, exist_line_num, line_pairs)
+            @ph_lines = deepcopy(lines)
+            @ph_exist_line_num = exist_line_num
+            @ph_intersections = []
+            
+            line_pairs.each do |pair|
+                @ph_intersections.append(pair.intersection)
+
+                @@min_x = [@@min_x, pair.intersection.x - 1].min
+                @@max_x = [@@max_x, pair.intersection.x + 1].max
+                @@min_y = [@@min_y, pair.intersection.y - 1].min
+                @@max_y = [@@max_y, pair.intersection.y + 1].max
+            end
+
+            @@min_x =  (@@min_x/10).to_i * 10
+            @@max_x =  ((@@max_x+10)/10 - 1).to_i * 10
+        end
+
+        def deepcopy(obj)
+            return Marshal.load(Marshal.dump(obj))    
+        end
+
+        def plot(data_for_plot, colors_for_plot)
+            #
+            # どこからどこまで描画するかは, [交点の中の最小-1, 交点の中の最大+1]
+            #
+
+            lines_for_plot = []
+            colors = []
+
+            @ph_lines.each_with_index do |line, idx|
+                color = idx < @ph_exist_line_num ? "#000000" : "#DDDDDD"
+                colors.append(color)
+
+                # lines_for_plot.append({data:[[@@min_x, line.val_at(@@min_x)], [@@max_x, line.val_at(@@max_x)], name:line.form() ]})
+                lines_for_plot.append({name:line.form() , data:[[@@min_x, line.val_at(@@min_x)], [@@max_x, line.val_at(@@max_x)]]})
+            end
+            data_for_plot.append(lines_for_plot)
+            colors_for_plot.append(colors)
+        end
+
+        def self.min_y()
+            return @@min_y
+        end
+
+        def self.max_y()
+            return @@max_y
+        end
+
+        def self.min_x()
+            return @@min_x
+        end
+
+        def self.max_x()
+            return @@max_x
+        end
+
+
+    end
+
 
     def top
         @page = "top"
@@ -83,50 +191,26 @@ class SolveController < ApplicationController
             puts "GET"
         end
 
-        @@line_counter = 0
+        @@line_counter  = 0
+        @phase_info_list = [PhaseInfo.new(@lines, @exist_line_num, [])]
         
         
-
-
-        add_plot()
-
+        
+        
         solve()
+        
 
-        add_plot()
-
-    end
-
-    def add_plot()
-        #
-        # どこからどこまで描画するかは, [交点の中の最小-1, 交点の中の最大+1]
-        #
-
-
-        @Left_x = -10
-        @Right_x = 10
-
-        lines_for_plot = []
-        colors = []
-
-        #
-        # ここもあとでかわる
-        # line_indicesを使う
-        #
-        @lines.each_with_index do |line, idx|
-            if idx < @exist_line_num
-                print "exist  "
-                line.show()
-                color = "#000000"
-            else
-                print "removed  "
-                line.show()
-                color = "DDDDDD"
-            end
-            lines_for_plot.append({data:[[@Left_x, line.val_at(@Left_x)], [@Right_x, line.val_at(@Right_x)]]})
-            colors.append(color)
+        @phase_info_list.each do |phase_info|
+            phase_info.plot(@data_for_plot, @colors_for_plot)
         end
-        @data_for_plot.append(lines_for_plot)
-        @colors_for_plot.append(colors)
+
+        @min_y = PhaseInfo.min_y
+        @max_y = PhaseInfo.max_y
+        @min_x = PhaseInfo.min_x
+        @max_x = PhaseInfo.max_x
+        p "######{@min_y}, #{@max_y}"
+        p "######{@min_x}, #{@max_x}"
+
     end
 
     # 入力を読んで, 解析
@@ -158,17 +242,9 @@ class SolveController < ApplicationController
         
         @exist_line_num = @line_num #未削除の直線の数
 
-        srand(0)
-        @lines = [] #@exist_line_num番目以前は未削除, それより後ろは削除済とする
-        (0...@line_num).each do |idx|
-            line = Line.new(rand(-10..10), rand(-10..10), idx)
-            @lines.append(line)
-        end
-
         file = File.join(Rails.root, "public", "sample_in.txt")
         @default_form_text = File.read(file)
         input(@default_form_text.split("\n"))
-
     end
 
     # 入力されたLPの表示
@@ -186,9 +262,9 @@ class SolveController < ApplicationController
 
     # 2次元LPを
     def solve
-
         debug_flag = true
         loop_cnt = 0
+
         while @exist_line_num > 2 and debug_flag do 
             puts "-----------------\nphase: #{loop_cnt}"
             puts @exist_line_num
@@ -203,7 +279,7 @@ class SolveController < ApplicationController
             #それぞれの直線ペアの交点のx座標を求める
             intersection_x_list = []
             line_pairs.each do |pair|
-                intersection_x_list.append(get_intersection_x(pair))
+                intersection_x_list.append(pair.intersection.x)
             end
             puts "交点のx座標 #{intersection_x_list}"
 
@@ -217,7 +293,6 @@ class SolveController < ApplicationController
 
             #最適解がx_medianより右にあるのか左にあるのか, あるいはx_medianが最適解なのか求める
             opt_direction = get_opt_direction(x_median)
-            p opt_direction
 
             if(opt_direction == "OPT")
                 break
@@ -225,13 +300,7 @@ class SolveController < ApplicationController
             delete_lines( opt_direction,  intersection_x_list, line_pairs, x_median)
             
 
-            @lines.each_with_index do |line, idx|
-                puts "#{idx} #{line.index}"
-                
-            end
-            
-
-            add_plot()
+            @phase_info_list.append(PhaseInfo.new(@lines, @exist_line_num, line_pairs))
             loop_cnt += 1
             
             # debug_flag = false # for debug
@@ -273,19 +342,7 @@ class SolveController < ApplicationController
         return line_pairs
     end
 
-    #交点のx座標を返す
-    def get_intersection_x(line_pair)
-        unless(line_pair.is_a?(LinePair))
-            raise RuntimeError, "get_intersection_x関数の引数はLinePairクラスであることを期待されます"
-        end
-
-        y_intercept1 = line_pair.line1.y_intercept
-        y_intercept2 = line_pair.line2.y_intercept
-        slope1 = line_pair.line1.slope
-        slope2 = line_pair.line2.slope
-        return (y_intercept2 - y_intercept1).to_f / (slope1 - slope2)
-    end
-
+    
     #x_listの中でk番目の要素を返す
     def get_kth_element(x_list, k)
         if( x_list.size() < 10)
@@ -407,6 +464,12 @@ class SolveController < ApplicationController
                     delete_line(line_pair.line2)
                 end
             end
+        end
+
+        # どの直線が残っていて, どれが削除済みか出力
+        @lines.each_with_index do |line, idx|
+            print idx < @exist_line_num ? "exist  " : "removed  "
+            line.show()
         end
     end
 

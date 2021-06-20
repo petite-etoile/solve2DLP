@@ -29,3 +29,7 @@ https://getbootstrap.jp/docs/4.2/utilities/spacing/
 * Bootstrapのよく使うクラス 
 
 https://qiita.com/nakanishi03/items/c80a16b9b9796c25f890#shadow
+
+* float使った時に, それより下の要素が被っちゃうのを解決
+
+https://reffect.co.jp/html/understanding_of_float#i

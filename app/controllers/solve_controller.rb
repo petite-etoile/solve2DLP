@@ -33,6 +33,10 @@ class SolveController < ApplicationController
                 return "y≥#{@slope}x"
             end
         end
+
+        def self.set_counter()
+            @@line_counter = 0
+        end
     end
 
     class Point
@@ -83,10 +87,10 @@ class SolveController < ApplicationController
 
     class PhaseInfo
         attr_accessor :ph_lines, :ph_exist_line_num, :ph_intersections
-        @@min_x = -1 
-        @@max_x = 1
-        @@min_y = -1
-        @@max_y = 1
+        @@min_x = -10 
+        @@max_x = 10
+        @@min_y = -10
+        @@max_y = 10
 
         #
         # 交点がない場合は空の配列を渡す
@@ -107,7 +111,9 @@ class SolveController < ApplicationController
             end
 
             @@min_x =  (@@min_x/10).to_i * 10
-            @@max_x =  ((@@max_x+10)/10 - 1).to_i * 10
+            @@max_x =  ((@@max_x+9)/10).to_i * 10
+            @@min_y =  (@@min_y/10).to_i * 10
+            @@max_y =  ((@@max_y+9)/10).to_i * 10
         end
 
         def deepcopy(obj)
@@ -126,7 +132,7 @@ class SolveController < ApplicationController
                 color = idx < @ph_exist_line_num ? "#000000" : "#DDDDDD"
                 colors.append(color)
 
-                lines_for_plot.append({name:line.form() , data:[[@@min_x, line.val_at(@@min_x)], [@@max_x, line.val_at(@@max_x)]]})
+                lines_for_plot.append({name:line.form().gsub("≥","=") , data:[[@@min_x, line.val_at(@@min_x)], [@@max_x, line.val_at(@@max_x)]]})
             end
             plot_x_axis(lines_for_plot, colors)
             plot_y_axis(lines_for_plot, colors)
@@ -162,15 +168,24 @@ class SolveController < ApplicationController
         end
 
 
+        def self.set_range()
+            @@min_x = -10 
+            @@max_x = 10
+            @@min_y = -10
+            @@max_y = 10
+        end
+
+
     end
 
 
     def top
         @page = "top"
         puts "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nv"
-        @data_for_plot = []
-        @colors_for_plot = []
+        
         @@TAB = "    "
+        Line.set_counter()
+        PhaseInfo.set_range()
 
         if(request.post?)
             puts "POST"
@@ -189,7 +204,7 @@ class SolveController < ApplicationController
 
 
             if(valid_input)
-                @messages = ["入力された問題", "#{@@TAB}min y", "#{@@TAB}s.t."]
+                @messages = ["入力された問題", "#{@@TAB}min #{@@TAB}y", "#{@@TAB}s.t."]
                 add_LP_message()
             else
                 @messages = ["入力形式が正しくありません"]
@@ -197,21 +212,22 @@ class SolveController < ApplicationController
             end
         else
             sample_input()
-            @messages = ["サンプル", "#{@@TAB}min y", "#{@@TAB}s.t."]
+            @messages = ["サンプル", "#{@@TAB}min #{@@TAB}y", "#{@@TAB}s.t."]
             add_LP_message()
             
             puts "GET"
         end
 
-        @@line_counter  = 0
         @phase_info_list = [PhaseInfo.new(@lines, @exist_line_num, [])]
         
         
         
         
         solve()
-        
 
+        #最初から最後のグラフ
+        @data_for_plot = []
+        @colors_for_plot = []
         @phase_info_list.each do |phase_info|
             phase_info.plot(@data_for_plot, @colors_for_plot)
         end
@@ -230,10 +246,6 @@ class SolveController < ApplicationController
         begin
             @line_num = arr[0].to_i
             @exist_line_num = @line_num
-
-            if(@line_num <= 1)
-                raise RuntimeError, "直線の数は2本以上"
-            end
 
             @lines = []
             (1..@line_num).each do |idx|
@@ -293,7 +305,7 @@ class SolveController < ApplicationController
             line_pairs.each do |pair|
                 intersection_x_list.append(pair.intersection.x)
             end
-            puts "交点のx座標 #{intersection_x_list}"
+            puts "交点のx座標 #{intersection_x_list.sort}"
 
             #交点のx座標の中央値を求める
             x_median = get_kth_element(intersection_x_list, intersection_x_list.size()/2)
@@ -316,6 +328,33 @@ class SolveController < ApplicationController
             loop_cnt += 1
             
             # debug_flag = false # for debug
+        end
+
+        if(@line_num >= 2 and @lines[0].slope == @lines[1].slope)
+            if(@lines[0].y_intercept <= @lines[1].slope)
+                delete_line(@lines[0])
+            else
+                delete_line(@lines[1])
+            end
+            @phase_info_list.append(PhaseInfo.new(@lines, @exist_line_num, []))
+        end
+
+        @opt_messages = []
+        if(@exist_line_num==1)
+            if(@lines[0].slope.positive?)
+                @opt_messages.append("最適解 : x=-∞")
+                @opt_messages.append("最適値 : -∞")
+            elsif(@lines[0].slope.negative?)
+                @opt_messages.append("最適解 : x=∞")
+                @opt_messages.append("最適値 : -∞")
+            else
+                @opt_messages.append("最適解 : x=0")
+                @opt_messages.append("最適値 : #{@lines[0].y_intercept}")
+            end
+        else
+            opt = LinePair.new(@line1, @line2).intersection
+            @opt_messages.append("最適解 : x=#{opt.x}")
+            @opt_messages.append("最適値 : #{opt.y}")
         end
     end
 
@@ -397,7 +436,7 @@ class SolveController < ApplicationController
 
         if( k < smallers.size() ) # x_listのk番目は, smallersに含まれている
             return get_kth_element( smallers, k) # smallersのk番目
-        elsif ( k <= smallers.size() + equals.size()) # x_listのk番目は, {各グループの中央値}の中央値と等しい
+        elsif ( k < smallers.size() + equals.size()) # x_listのk番目は, {各グループの中央値}の中央値と等しい
             return median_of_medians
         else #x_listのk番目は, largersに含まれている
             return get_kth_element( largers, k - smallers.size() - equals.size() )

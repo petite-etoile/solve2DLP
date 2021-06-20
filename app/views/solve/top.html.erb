@@ -1,27 +1,58 @@
 <%= form_tag({controller: "solve", action: "top"}, multipart: true) do%>
     <div class = "form-group">
         <%= text_area_tag(:"2dlp_text", @default_form_text, {rows:10, class:"form-control"})%>
-        <%p @default_form_text%>
         <%= file_field_tag(:"2dlp_file", class:"form-control w-50 float-left")%>
         <%= submit_tag("計算", class: "btn btn-primary float-right w-25") %>
     </div>
 <% end %>
 
+<div class="space"> </div>
+<div class="float-left" style="height:1000px">
+    <% @messages.each_with_index do |message,idx| %>
+        <%if(idx==25)%>
+            <pre style="text-align:center;"> 以下略 </pre>
+            <% break %>
+        <%end %>
+        <pre> <%= message %> </pre>
+    <%end %>
+</div>
+
+<div class="graph-wrapper1">
+    <% 
+        lines = @data_for_plot[0]
+        colors = @colors_for_plot[0] 
+    %>
+    <%= line_chart(lines, colors:colors, max:@max_y, min:@min_y,  height:"400px", x_title: "x", y_title: "y", library:{pointRadius:0}, legend:"top") %>
+</div>
 
 
-<% @messages.each do |message|%>
-    <br>
-    <pre> <%= message %> </pre>
-<%end %>
+<div class="opt-wrapper">
+    <% @opt_messages.each do |message|%>
+        <%= message%> <br>
+    <% end %>
+</div>
 
+
+<div class="graph-wrapper1">
+    <% 
+        lines = @data_for_plot[-1]
+        colors = @colors_for_plot[-1] 
+    %>
+    <%= line_chart(lines, colors:colors, max:@max_y, min:@min_y,  height:"400px", x_title: "x", y_title: "y", library:{pointRadius:0}, legend:"bottom") %>
+</div>
+
+<div class="other"> </div>
 
 <%counter = 0%>
 <% @data_for_plot.zip(@colors_for_plot) do |lines, colors| %>
-    phase <%=counter %>
-    <%counter+=1%>
-    <% p lines%>
-    <%# <%= line_chart(lines, colors:colors, max:@max_y, min:@min_y, xmax:@max_x, xmin:@min_x , height:"800px", x_title: "x", y_title: "y", library:{pointRadius:0}) %> %>
-    <%= line_chart(lines, colors:colors, max:@max_y, min:@min_y,  height:"800px", x_title: "x", y_title: "y", library:{pointRadius:0}, legend:"top") %>
-    <%# <%= line_chart(lines, colors:colors, max:@max_y, min:@min_y, height:"800px", x_title: "x", y_title: "y", library:{pointRadius:0}) %> %>
-    <div class="space"> </div>
+    <div class="graph-wrapper2"> 
+        phase <%=counter %>
+        <%counter+=1%>
+        <%= line_chart(lines, colors:colors, max:@max_y, min:@min_y,  height:"400px", x_title: "x", y_title: "y", library:{pointRadius:0}, legend:"top") %>
+    </div>
 <% end %>
+<div class="other"> </div>
+
+
+<%#= line_chart(lines, colors:colors, max:@max_y, min:@min_y, height:"800px", x_title: "x", y_title: "y", library:{pointRadius:0}) %>
+<%#= line_chart(lines, colors:colors, max:@max_y, min:@min_y, xmax:@max_x, xmin:@min_x , height:"800px", x_title: "x", y_title: "y", library:{pointRadius:0}) %>

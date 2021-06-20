@@ -126,11 +126,23 @@ class SolveController < ApplicationController
                 color = idx < @ph_exist_line_num ? "#000000" : "#DDDDDD"
                 colors.append(color)
 
-                # lines_for_plot.append({data:[[@@min_x, line.val_at(@@min_x)], [@@max_x, line.val_at(@@max_x)], name:line.form() ]})
                 lines_for_plot.append({name:line.form() , data:[[@@min_x, line.val_at(@@min_x)], [@@max_x, line.val_at(@@max_x)]]})
             end
+            plot_x_axis(lines_for_plot, colors)
+            plot_y_axis(lines_for_plot, colors)
+
             data_for_plot.append(lines_for_plot)
             colors_for_plot.append(colors)
+        end
+
+        def plot_x_axis(lines_for_plot, colors)
+            lines_for_plot.append({name:"y=0", data:[[@@min_x,0], [@@max_x,0]]})
+            colors.append("blue")
+        end
+
+        def plot_y_axis(lines_for_plot, colors)
+            lines_for_plot.append({name:"x=0", data:[[0,@@min_y-1], [0,@@max_y+1]]})
+            colors.append("blue")
         end
 
         def self.min_y()

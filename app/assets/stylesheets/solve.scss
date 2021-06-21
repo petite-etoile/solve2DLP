@@ -63,7 +63,7 @@ body {
     float:right;
     width: 500px;
     border: 3px solid;
-    height: 725px;
+    height: auto;
 }
 
 .format-title{
@@ -98,7 +98,10 @@ body {
 }
 
 .QA-title{
-
+    font-size: xx-large;
+    border-bottom: #EEE 2px solid;
+    padding-bottom: 15px;
+    margin-bottom: 15px;
 }
 
 .Question{

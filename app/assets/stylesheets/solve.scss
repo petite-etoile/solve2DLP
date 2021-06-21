@@ -104,13 +104,16 @@ body {
     margin-bottom: 15px;
 }
 
-.Question{
-
+.Q, .A{
+    font-size: x-large;
 }
 
-.Answer{
-
+.Question, .Answer{
+    padding-left: 30px;
+    font-size: large;
 }
+
+
 
 
 

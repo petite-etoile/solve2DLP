@@ -41,7 +41,7 @@
     <%= line_chart(lines, colors:colors, max:@max_y, min:@min_y,  height:"400px", x_title: "x", y_title: "y", library:{pointRadius:0}, legend:"bottom") %>
 </div>
 
-<div class="other"> </div>
+<div class="other border-top"> </div>
 
 <%counter = 0%>
 <% @data_for_plot.zip(@colors_for_plot) do |lines, colors| %>

@@ -23,12 +23,7 @@ body {
 }
 
 
-.graph-wrapper1{
-    height:500px;
-    width:550px;
-    float:left;
-    margin-left:200px;
-}
+
 
 .opt-wrapper{
     height:150px;
@@ -59,11 +54,22 @@ body {
     .for-small{
         display: none;
     }
+    .graph-wrapper1{
+        height:500px;
+        width:550px;
+        float:left;
+        margin-left:200px;
+    }
 }
 
 //スマホ向け
 @media screen and (max-width: 480px){
     .for-small{
+    }
+    .graph-wrapper1{
+        height:500px;
+        width:550px;
+        float:left;
     }
 
 }

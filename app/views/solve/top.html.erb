@@ -16,6 +16,8 @@
 
 
 <div class="other"> </div>
+
+
 <% if(@opt_messages)%>
     <div class="opt-wrapper">
         <% @opt_messages.each do |message|%>
@@ -35,7 +37,6 @@
         <pre> <%= message %> </pre>
     <%end %>
 </div>
-<%# <div class="float-left w-25" style="height:1000px"> %>
 
 
 <% if(@data_for_plot)%>

@@ -1,29 +1,13 @@
 // Place all the styles related to the solve controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: https://sass-lang.com/
-.header{
-    background-color: black;
-    width: 50%;
-}
-
 .space{
     height:30px;
-}
-
-.margin-0{
-    margin:0 !important;
-}
-
-.padding-0{
-    padding:0 !important;
 }
 
 body {
     padding-top:80px;
 }
-
-
-
 
 .opt-wrapper{
     height:150px;
@@ -47,7 +31,7 @@ body {
 
 .problem-wrapper{
     float:left;
-    width:50%;
+    width:500px;
     height:725px;
 }
 
@@ -77,7 +61,7 @@ body {
 
 .format-wrapper{
     float:right;
-    width: 50%;
+    width: 500px;
     border: 3px solid;
     height: 725px;
 }

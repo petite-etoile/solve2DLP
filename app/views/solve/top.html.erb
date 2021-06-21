@@ -1,10 +1,3 @@
-<div class="for-small">
-    <a class="btn btn-secondary", href="/"> ホーム </a>
-    <a class="btn btn-dark", href="/howto"> 使い方 </a>
-    <a class="btn btn-dark", href="/about"> このページについて </a>
-</div>
-<div class="other"> </div>
-
 <div style="font-size:x-large; padding:0px 0px 30px 30px"> 2次元の線形計画問題の計算機です. 2次元線形計画問題については<a href="/howto">こちら</a>.
 </div>
 
@@ -68,6 +61,7 @@
                 <%counter+=1%>
                 <%= line_chart(lines, colors:colors, max:@max_y, min:@min_y,  height:"400px", x_title: "x", y_title: "y", library:{pointRadius:0}, legend:"top") %>
             </div>
+
         <% end %>
     <% else %>
         データ数が膨大なためグラフの描画を省略します

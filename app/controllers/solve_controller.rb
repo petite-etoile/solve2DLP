@@ -246,6 +246,9 @@ class SolveController < ApplicationController
         begin
             @line_num = arr[0].to_i
             @exist_line_num = @line_num
+            if(@line_num == 0)
+                return false
+            end
 
             @lines = []
             (1..@line_num).each do |idx|
@@ -275,11 +278,11 @@ class SolveController < ApplicationController
     def add_LP_message
         @lines.each do |line|
             if(line.y_intercept.positive?)
-                @messages.append("#{@@TAB}#{@@TAB}y ≥ #{line.slope}x +#{line.y_intercept}")
+                @messages.append("#{@@TAB}#{@@TAB}y ≥ #{format("%10.3f", line.slope)}x +#{format("%10.3f", line.y_intercept)}")
             elsif(line.y_intercept.negative?)
-                @messages.append("#{@@TAB}#{@@TAB}y ≥ #{line.slope}x #{line.y_intercept}")
+                @messages.append("#{@@TAB}#{@@TAB}y ≥ #{format("%10.3f", line.slope)}x -#{format("%10.3f", -line.y_intercept)}")
             else
-                @messages.append("#{@@TAB}#{@@TAB}y ≥ #{line.slope}x ")
+                @messages.append("#{@@TAB}#{@@TAB}y ≥ #{format("%10.3f", line.slope)}x ")
             end
         end
     end

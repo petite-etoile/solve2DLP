@@ -1,3 +1,11 @@
+<div class="for-small">
+    <a class="btn btn-secondary", href="/"> ホーム </a>
+    <a class="btn btn-dark", href="/howto"> 使い方 </a>
+    <a class="btn btn-dark", href="/about"> このページについて </a>
+</div>
+<div class="other"> </div>
+
+
 <%= form_tag({controller: "solve", action: "top"}, multipart: true) do%>
     <div class = "form-group">
         <%= text_area_tag(:"2dlp_text", @default_form_text, {rows:10, class:"form-control"})%>
@@ -5,6 +13,17 @@
         <%= submit_tag("計算", class: "btn btn-primary float-right w-25") %>
     </div>
 <% end %>
+
+
+<div class="other"> </div>
+<% if(@opt_messages)%>
+    <div class="opt-wrapper">
+        <% @opt_messages.each do |message|%>
+            <%= message%> <br>
+        <% end %>
+    </div>
+<% end %>
+
 
 <div class="space"> </div>
 <div class="float-left" style="height:1000px">
@@ -18,41 +37,40 @@
 </div>
 <%# <div class="float-left w-25" style="height:1000px"> %>
 
-<div class="graph-wrapper1">
-    <% 
-        lines = @data_for_plot[0]
-        colors = @colors_for_plot[0] 
-    %>
-    <%= line_chart(lines, colors:colors, max:@max_y, min:@min_y,  height:"400px", x_title: "x", y_title: "y", library:{pointRadius:0}, legend:"top") %>
-</div>
 
-
-<div class="opt-wrapper">
-    <% @opt_messages.each do |message|%>
-        <%= message%> <br>
-    <% end %>
-</div>
-
-
-<div class="graph-wrapper1">
-    <% 
-        lines = @data_for_plot[-1]
-        colors = @colors_for_plot[-1] 
-    %>
-    <%= line_chart(lines, colors:colors, max:@max_y, min:@min_y,  height:"400px", x_title: "x", y_title: "y", library:{pointRadius:0}, legend:"bottom") %>
-</div>
-
-<div class="other border-top"> </div>
-
-<%counter = 0%>
-<% @data_for_plot.zip(@colors_for_plot) do |lines, colors| %>
-    <div class="graph-wrapper2"> 
-        <div style="font-size:large"> phase  <%=counter %> </div>
-        <%counter+=1%>
+<% if(@data_for_plot)%>
+    <div class="graph-wrapper1">
+        <% 
+            lines = @data_for_plot[0]
+            colors = @colors_for_plot[0] 
+        %>
         <%= line_chart(lines, colors:colors, max:@max_y, min:@min_y,  height:"400px", x_title: "x", y_title: "y", library:{pointRadius:0}, legend:"top") %>
     </div>
+
+    <div class="graph-wrapper1">
+        <% 
+            lines = @data_for_plot[-1]
+            colors = @colors_for_plot[-1] 
+        %>
+        <%= line_chart(lines, colors:colors, max:@max_y, min:@min_y,  height:"400px", x_title: "x", y_title: "y", library:{pointRadius:0}, legend:"bottom") %>
+    </div>
+
+    <div class="other border-top"> </div>
+
+    <% if(@data_for_plot.size * @line_num <= 1000000) %>
+        <% counter = 0 %>
+        <% @data_for_plot.zip(@colors_for_plot) do |lines, colors| %>
+            <div class="graph-wrapper2"> 
+                <div style="font-size:large"> phase  <%=counter %> </div>
+                <%counter+=1%>
+                <%= line_chart(lines, colors:colors, max:@max_y, min:@min_y,  height:"400px", x_title: "x", y_title: "y", library:{pointRadius:0}, legend:"top") %>
+            </div>
+        <% end %>
+    <% else %>
+        データ数が膨大なためグラフの描画を省略します
+    <% end %>
+    <div class="other"> </div>
 <% end %>
-<div class="other"> </div>
 
 
 <%#= line_chart(lines, colors:colors, max:@max_y, min:@min_y, height:"800px", x_title: "x", y_title: "y", library:{pointRadius:0}) %>

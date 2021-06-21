@@ -32,9 +32,7 @@ body {
 
 .opt-wrapper{
     height:150px;
-    width:550px;
-    float:left;
-    margin-left:200px;
+    width: 100%;
     text-align: center;
     font-size:xx-large;
 }
@@ -53,4 +51,19 @@ body {
 
 .container{
     background-color: #EEE;
+}
+
+
+//PC向け
+@media screen and (min-width: 481px){
+    .for-small{
+        display: none;
+    }
+}
+
+//スマホ向け
+@media screen and (max-width: 480px){
+    .for-small{
+    }
+
 }

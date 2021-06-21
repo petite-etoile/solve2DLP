@@ -92,6 +92,24 @@ body {
 
 
 
+.QA-wrapper{
+    background-color: #b4e3ff ;
+    padding: 30px;
+}
+
+.QA-title{
+
+}
+
+.Question{
+
+}
+
+.Answer{
+
+}
+
+
 
 //PC向け
 @media screen and (min-width: 481px){
@@ -127,5 +145,15 @@ body {
         width:350px;
         float:left;
     }
+
+    .format-wrapper{
+        float:left !important;
+        width: 100% !important; 
+    }
+ 
+    .problem-wrapper{
+        width:100% !important;
+    }
+    
 
 }

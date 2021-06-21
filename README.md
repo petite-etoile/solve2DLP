@@ -37,3 +37,7 @@ https://reffect.co.jp/html/understanding_of_float#i
 * favicon
 
 https://asalworld.com/1418/
+
+* 数式の表示
+
+https://www.wakuwakubank.com/posts/524-html-css-mathml/

@@ -3,4 +3,141 @@
     <a class="btn btn-secondary", href="/howto"> 使い方 </a>
     <a class="btn btn-dark", href="/about"> このページについて </a>
 </div>
+
+
+
+<div class="problem-wrapper">
+    <div class="problem-title">二次元線形計画問題</div>
+
+    <div class="problem">
+        <math>
+            <mtable>
+                <mtr>
+                    <mtd> <mi> min </mi>  </mtd>
+                    <mtd>   </mtd>
+                    <mtd> <mi> y </mi>  </mtd>
+                </mtr>
+                <mtr>
+                    <mtd> <mi> s.t. </mi>  </mtd>
+                    <mtd> 
+                        <mi> y </mi>  
+                    </mtd>
+                    <mtd> 
+                        <mo> ≥ </mo>  
+                    </mtd>
+                    <mtd> 
+                        <msub> <mi> a </mi>   <mn> 1 </mn> </msub>  
+                        <mo> + </mo>
+                        <msub> <mi> b </mi>   <mn> 1 </mn> </msub>  
+                    </mtd>
+                </mtr>
+                <mtr>
+                    <mtd> </mtd>
+                    <mtd> 
+                        <mi> y </mi>  
+                    </mtd>
+                    <mtd> 
+                        <mo> ≥ </mo>  
+                    </mtd>
+                    <mtd> 
+                        <msub> <mi> a </mi>   <mn> 2 </mn> </msub>  
+                        <mo> + </mo>
+                        <msub> <mi> b </mi>   <mn> 2 </mn> </msub>  
+                    </mtd>
+                </mtr>
+                <mtr>
+                    <mtd></mtd>
+                    <mtd></mtd>
+                    <mtd> <mo> ⠇ </mo>  </mtd>
+                </mtr>
+                <mtr>
+                    <mtd> </mtd>
+                    <mtd> 
+                        <mi> y </mi>  
+                    </mtd>
+                    <mtd> 
+                        <mo> ≥ </mo>  
+                    </mtd>
+                    <mtd> 
+                        <msub> <mi> a </mi>   <mn> n </mn> </msub>  
+                        <mo> + </mo>
+                        <msub> <mi> b </mi>   <mn> n </mn> </msub>  
+                    </mtd>
+                </mtr>
+            </mtable>
+
+        </math>
+    </div>
+
+    <div class="problem-image" style="color:red; text-align:center;">
+        ここに問題例の図が入る
+    </div>
+</div>
+
+
+<div class="format-wrapper">
+    <div class="format-title">入力形式</div>
+
+    <div class="format">
+        <math>
+            <mtable>
+                <mtr>
+                    <mtd> <mi> n </mi> </mtd>
+                </mtr>
+                <mtr>
+                    <mtd> <msub> <mi> a </mi>   <mn> 1 </mn> </msub>  </mtd>
+                    <mtd> <msub> <mi> b </mi>   <mn> 1 </mn> </msub>  </mtd>
+                </mtr>
+                <mtr>
+                    <mtd> <msub> <mi> a </mi>   <mn> 2 </mn> </msub>  </mtd>
+                    <mtd> <msub> <mi> b </mi>   <mn> 2 </mn> </msub>  </mtd>
+                </mtr>
+                <mtr>
+                    <mtd> <mo> ⠇ </mo>  </mtd>
+                </mtr>
+                <mtr>
+                    <mtd> <msub> <mi> a </mi>   <mi> n </mi> </msub>  </mtd>
+                    <mtd> <msub> <mi> b </mi>   <mi> n </mi> </msub>  </mtd>
+                </mtr>
+            </mtable>
+
+        </math>
+    </div>
+
+    <div class="format-explain">
+        <p>
+            1行目に制約の数を表す変数<math><mi>n</mi></math>を与える.<br><br>
+        
+            2行目から続く<math><mi>n</mi></math>行のうち,<math><mi>i</mi></math>行目においては,<br>
+            <math><mi>i</mi></math>番目の制約を表す2つの実数<math><msub><mi>a</mi><mn>i</mn></msub><mo>,</mo><msub><mi>b</mi><mn>i</mn></msub></math>を空白区切で与える.<br><br>
+
+            これは,<math><mi>i</mi></math>本目の制約が
+            <math>
+                <mi>y</mi> <mo>≥</mo>
+                <msub>
+                    <mi>a</mi>
+                    <mn>i</mn>
+                </msub>
+                <mo>+</mo>
+                 <msub>
+                    <mi>b</mi>
+                    <mn>i</mn>
+                </msub>
+            </math>
+            であることを表し, <br>
+            分数の形で与えることを許さない.
+
+        
+
+
+
+
+
+        </p>
+    </div>
+</div>
+
+
+
 <div class="other"> </div>
+Q&A

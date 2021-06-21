@@ -45,6 +45,70 @@ body {
 }
 
 
+.problem-wrapper{
+    float:left;
+    width:50%;
+    height:725px;
+}
+
+.problem-title{
+    text-align: center;
+    font-size: 40px;
+    padding-top: 25px;
+    padding-bottom: 25px;
+}
+
+.problem{
+    text-align: center;
+    font-size:30px;
+    padding-top: 25px;
+    padding-bottom: 25px;
+}
+
+.problem-image{
+    font-size: 20px;
+    padding-top: 30px;
+    padding-bottom: 30px;
+    padding-left: 30px;
+}
+
+
+
+
+.format-wrapper{
+    float:right;
+    width: 50%;
+    border: 3px solid;
+    height: 725px;
+}
+
+.format-title{
+    text-align: center;
+    font-size: 40px;
+    border-bottom: 2px solid #CCC;
+    padding-top: 25px;
+    padding-bottom: 25px;
+}
+
+.format{
+    text-align: center;
+    font-size:30px;
+    padding-top: 25px;
+    padding-bottom: 25px;
+    background-color: #CCC;
+}
+
+.format-explain{
+    font-size: 20px;
+    padding-top: 30px;
+    padding-bottom: 30px;
+    padding-left: 30px;
+}
+
+
+
+
+
 //PC向け
 @media screen and (min-width: 481px){
     .for-small{
@@ -65,7 +129,8 @@ body {
 
 //スマホ向け
 @media screen and (max-width: 480px){
-    .for-small{
+    .for-pc{
+        display: none;
     }
     .graph-wrapper1{
         height:500px;

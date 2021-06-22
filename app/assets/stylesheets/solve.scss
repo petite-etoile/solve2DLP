@@ -31,8 +31,8 @@ body {
 
 .problem-wrapper{
     float:left;
-    width:500px;
-    height:725px;
+    width:auto;
+    height:auto;
 }
 
 .problem-title{
@@ -50,10 +50,10 @@ body {
 }
 
 .problem-image{
-    font-size: 20px;
-    padding-top: 30px;
-    padding-bottom: 30px;
-    padding-left: 30px;
+    margin-top: 30px;
+    margin-bottom: 30px;
+    margin-left: 30px;
+    border:2px solid;
 }
 
 
@@ -61,7 +61,7 @@ body {
 
 .format-wrapper{
     float:right;
-    width: 500px;
+    width: auto;
     border: 3px solid;
     height: auto;
 }
@@ -130,6 +130,9 @@ body {
         padding-left: 30px;
         font-size: large;
     }
+    .problem-image{
+        width:550px;
+    }
 }
 
 //スマホ向け
@@ -166,4 +169,7 @@ body {
         font-size:small;
     }
 
+    .problem-image{
+        width:470px;
+    }
 }

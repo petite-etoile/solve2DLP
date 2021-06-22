@@ -113,7 +113,7 @@ body {
     .graph-wrapper1{
         height:500px;
         width:550px;
-        float:left;
+        float:right;
         margin-left:200px;
     }
     .graph-wrapper2{
@@ -144,14 +144,14 @@ body {
         display: none;
     }
     .graph-wrapper1{
-        height:500px;
-        width:550px;
+        height:auto;
+        width:auto;
         float:left;
     }
 
     .graph-wrapper2{
-        height:450px;
-        width:350px;
+        height:auto;
+        width:auto;
         float:left;
     }
 

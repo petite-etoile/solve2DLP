@@ -104,16 +104,6 @@ body {
     margin-bottom: 15px;
 }
 
-.Q, .A{
-    font-size: x-large;
-}
-
-.Question, .Answer{
-    padding-left: 30px;
-    font-size: large;
-}
-
-
 
 
 
@@ -132,6 +122,13 @@ body {
         height:450px;
         width:550px;
         float:left;
+    }
+    .Q, .A{
+        font-size: x-large;
+    }
+    .Question, .Answer{
+        padding-left: 30px;
+        font-size: large;
     }
 }
 
@@ -165,6 +162,7 @@ body {
         font-size: medium;
     }
     .Question, .Answer{
+        padding-left: 10px;
         font-size:small;
     }
 

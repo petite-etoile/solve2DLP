@@ -1,7 +1,7 @@
 <div class="top-explain x-large"> 2次元の線形計画問題の計算機です. 2次元線形計画問題については<a href="/howto">こちら</a>.
 </div>
 
-<%= form_tag({controller: "solve", action: "top"}, multipart: true) do%>
+<%= form_tag({controller: "solve", action: "top"}, multipart: true, name: "lp_form") do%>
     <div class = "form-group">
         <%= text_area_tag(:"2dlp_text", @default_form_text, {rows:10, class:"form-control"})%>
         <%= file_field_tag(:"2dlp_file", class:"form-control w-50 float-left")%>
@@ -72,3 +72,16 @@
 
 <%#= line_chart(lines, colors:colors, max:@max_y, min:@min_y, height:"800px", x_title: "x", y_title: "y", library:{pointRadius:0}) %>
 <%#= line_chart(lines, colors:colors, max:@max_y, min:@min_y, xmax:@max_x, xmin:@min_x , height:"800px", x_title: "x", y_title: "y", library:{pointRadius:0}) %>
+<script>
+
+    document.onkeydown = event => {
+        if( event.keyCode == 13 ){
+            if(event.shiftKey){
+                document.lp_form.submit();
+                console.log("SHIFT ENTER")
+            }
+        }
+        console.log(event.key)
+    };
+
+</script>

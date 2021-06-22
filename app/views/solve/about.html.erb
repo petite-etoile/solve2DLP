@@ -1,14 +1,207 @@
-きっかけ
 
-工夫した点
-特徴
-O(n)
-~ グラフ描画のための部分はどうしてもO(n log(n)) ~ 
+<h1>これは始めて作ったWebアプリです.</h1>
 
-今後の課題
+<h1 class="border-bottom x-large" style="margin-top:40px">作った人</h1>
+    <div class="about-p large">
+        petite_prog(<a href="https://twitter.com/petite_prog">@petite_prog</a>)が作りました. <br>
+        サイトの作成に協力してくださった全ての人達に,  この場を借りて謝辞を述べさせていただきます. <br><br>
+        <a href="https://github.com/petite-etoile/solve2DLP" class="btn border">
+            <i class="fab fa-github"></i>
+            github
+        </a>
 
-入力で分数を許す
-小数で受け取ったものも内部で分数で計算することで 数値誤差対策 / 最適解がわかりやすくなる
+        <a href="https://twitter.com/petite_prog" class="btn border">
+            <i class="fab fa-twitter"></i>
+            twitter
+        </a>
+
+        <a href="https://qiita.com/petite-etoile" class="btn border">
+            <i class="fa fa-search"></i>
+        
+            Qiita
+        </a>
+    </div>
+
+
+<h1 class="border-bottom x-large" style="margin-top:40px">Webアプリを作ったきっかけ</h1>
+    <div class="about-p large">
+        <ul>
+            <li>
+                2021年春,  大学院の集中講義で「ログインサイトだけでもセキュアに作ろうとするとこれだけ意識するところがある」と感じながら実習した.<br>
+            </li>
+            <li>
+                そのときエンジニアになるなら,  webアプリの1個くらい作るべきだと思った.<br>
+            </li>
+            <li>
+                成果物としてわかりやすい.<br>
+            </li>
+        </ul>
+    </div>
+
+<h1 class="border-bottom x-large" style="margin-top:40px">このアプリを作ったきっかけ</h1>
+    <div class="about-p large">
+        大学の計算幾何学の授業で2次元線形計画問題を縮小法でO(n)で求めるアルゴリズムを学んだ.<br>
+        たまたまその時,  <a href="https://qiita.com/petite-etoile/items/363b1200cfae7cb641de">Qiitaに記事</a>を書いたので,  それをもとに作ろうと思った.<br>
+    </div>
+
+<h1 class="border-bottom x-large" style="margin-top:40px">特徴</h1>
+    <div class="about-p large">
+        <math><mi>O</mi><mo>(</mo><mi>n</mi><mo>)</mo></math>で解きます.<br>
+        <s>ただし,  グラフ描画に関わる部分は理論上
+        <math>
+            <mi>O</mi>
+            <mo>(</mo>
+            <mi>n</mi>
+            <mi>log</mi>
+            <mi>n</mi>
+            <mo>)</mo>
+        </math>
+        かかるのでそこはノーカウントで.</s><br><br>
+
+
+        削除した直線,  削除されてない直線を管理するときに,  うまくやらないと
+        <math><mi>O</mi><mo>(</mo><mi>n</mi><mo>)</mo></math>
+        でなくなってしまうのでがんばった.<br><br>
+        以下を満たすように削除した直線, 削除されていない直線を管理したい.
+        <ul>
+            <li>
+                削除操作を最悪計算量<math><mi>O</mi><mo>(</mo><mn>1</mn><mo>)</mo></math>で行う
+            </li>
+            <li>
+                削除されていない直線を走査するときに, <math><mi>O</mi><mo>(</mo><mi>m</mi><mo>)</mo></math>で走査したい.
+                (<math><mi>m</mi><mo>≔</mo><mi>削除されていない直線の数</mi></math>)
+            </li>
+        </ul>
+
+        <div class="font-weight-bold"> 案1(×) </div>
+        <div class="plan" >
+            未削除の直線の添え字を配列で管理すると, 削除に毎回<math><mi>O</mi><mo>(</mo><mi>n</mi><mo>)</mo></math>かかるため, 
+            全体の最悪計算量が<math><mi>O</mi><mo>(</mo><msup><mi>n</mi><mn>2</mn></msup><mo>)</mo></math>になってしまう.<br>
+        </div>
+        <div class="font-weight-bold"> 案2(×) </div>
+        <div class="plan" >
+            未削除の直線の添え字を配列ではなく, Setクラスで管理する. <br>
+            Pythonのsetは, ハッシュテーブルを使っていて, 削除の最悪計算量が<math><mi>O</mi><mo>(</mo><mn>1</mn><mo>)</mo></math>であるが, 
+            残念ながら, RubyのSetは削除の最悪計算量が<math><mi>O</mi><mo>(</mo><mi>log</mi><mi>n</mi><mo>)</mo></math>である.
+        </div>
+        <div class="font-weight-bold"> 案3(×) </div>
+        <div class="plan" >
+            次のような配列で管理する.
+            <math>
+                <msub>
+                    <mi>A</mi>
+                    <mi>i</mi>
+                </msub>
+                
+                <mo>=</mo>
+                <mo>{</mo>
+
+                <mtable>
+                    <mtr> 
+                        <mtd>   
+                            <mn> 0 </mn>
+                        </mtd>
+                        <mtd>
+                            <mi> (直線 </mi>
+                            <mi> i </mi>
+                            <mi> が削除済) </mi>
+                        </mtd>
+                    </mtr>
+                    <mtr> 
+                        <mtd>   
+                            <mn> 1 </mn>
+                        </mtd>
+                        <mtd>
+                            <mi> (直線 </mi>
+                            <mi> i </mi>
+                            <mi> が未削除) </mi>
+                        </mtd>
+                    </mtr>
+                </mtable>
+
+                <mi></mi>
+                <mi></mi>
+                <mi></mi>
+                <mi></mi>
+            </math> <br>
+            これなら, 削除操作が定数時間で可能. <br>
+            しかし, 未削除の直線の走査の最悪計算量が<math><mi>O</mi><mo>(</mo><mi>n</mi><mo>)</mo></math>であるため, 
+            全体の計算量が<math><mi>O</mi><mo>(</mo><mi>n</mi><mi>log</mi><mi>n</mi><mo>)</mo></math>になってしまう.
+            <br>※全体のステップ数は<math><mi>O</mi><mo>(</mo><mi>log</mi><mi>n</mi><mo>)</mo></math>
+            
+        </div>
+        <div class="font-weight-bold"> 案4(○) </div>
+        <div class="plan" >
+            未削除の直線の数<math><mi>m</mi></math>を保持する.<br>
+            直線の添え字を配列で管理するのだが, 前から<math><mi>m</mi></math>個の直線は未削除, それ以降の直線は削除済みであることを表す.<br>
+            直線<math><mi>i</mi></math>を削除するときは, 前から<math><mi>m</mi></math>番目と交換する.<br><br>
+
+            例).<br>
+                <math><mi>m</mi><mo>=</mo><mn>3</mn></math><br>
+                直線の添え字を管理する配列A = [0,1,3,2]<br><br>
+                これは, 添え字が2の直線がすでに削除済みで, 他の直線は未削除であることを表す. ここで, 添え字が0の直線を削除すると, 次のようになる.<br><br>
+                <math><mi>m</mi><mo>=</mo><mn>2</mn></math><br>
+                直線の添え字を管理する配列A = [3,1,0,2]<br>
+
+                削除はこのように定数時間で出来て, 未削除の直線の走査も, 前からm番目までを見ればよいので最悪計算量は
+                <math><mi>O</mi><mo>(</mo><mi>m</mi><mo>)</mo></math>である.
+
+
+
+
+            
+
+        
+        </div>
+    </div>
+
+<h1 class="border-bottom x-large" style="margin-top:40px">工夫した点</h1>
+    <div class="about-p large">
+        <ul>
+            <li>
+                スマホなどの小さい画面で開いたときにもレイアウトが壊れないように設定した.(ナビゲーションバーの一部が見えなくなるくらい画面が小さいときのみ, それに対応するボタンをその下に配置するなど)
+            </li>
+            <li>
+                ファイルでも入力できるようにし, 送信後はフォームにテキストとして残すことで, 「入力を少し変えて再度実行」をしやすくした.
+            </li>
+            <li>
+                shift + enterで送信する機能
+            </li>
+        </ul>
+
+
+
+    </div>
+    
+    
+<h1 class="border-bottom x-large" style="margin-top:40px">今後の課題</h1>
+    <div class="about-p large">
+        <ul>
+            <li>入力で分数を許す</li>
+            <li>小数で受け取ったものも内部で分数で計算する</li>
+            <ul>
+                <li>数値誤差対策になる</li>
+                <li>最適解の表示がわかりやすい</li>
+            </ul>
+        </ul>
+    </div>
+
+
+<h1 class="border-bottom x-large" style="margin-top:40px">使った技術</h1>
+    <div class="about-p large">
+        <ul>
+            <li>ruby on rails 6</li>
+            <li>heroku</li>
+            <li>bootstrap(デザイン)</li>
+            <li>FontAwesome(アイコンデザイン)</li>
+            <li>MathJax(数式の表示)</li>
+            <li>Chartkick, Chart.js(グラフの描画)</li>
+            <li>GoodNote5(手書き図, ページアイコン)</li>
+
+        </ul>
+    </div>
+
+<h1 class="border-bottom x-large" style="margin-top:40px">アルゴリズムについての詳しい説明</h1>
 
 
 <div class="other"> </div>

@@ -41,3 +41,8 @@ https://asalworld.com/1418/
 * 数式の表示
 
 https://www.wakuwakubank.com/posts/524-html-css-mathml/
+
+* twitterとかgithubとかのアイコンを載せる(Font Awesome)
+
+https://blog.codecamp.jp/font-awesome-icon
+

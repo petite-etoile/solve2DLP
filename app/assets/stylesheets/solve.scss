@@ -9,6 +9,10 @@ body {
     padding-top:80px;
 }
 
+.top-explain{
+    padding:0px 0px 30px 30px;
+}
+
 .opt-wrapper{
     height:150px;
     width: 100%;
@@ -52,7 +56,6 @@ body {
 .problem-image{
     margin-top: 30px;
     margin-bottom: 30px;
-    margin-left: 30px;
     border:2px solid;
 }
 
@@ -109,7 +112,9 @@ body {
 
 //PC向け
 @media screen and (min-width: 991px){
-    
+    .top-explain{
+        font-size: x-large;
+    }
     .graph-wrapper1{
         height:500px;
         width:550px;
@@ -130,6 +135,7 @@ body {
     }
     .problem-image{
         width:550px;
+        margin-left: 30px;
     }
     //ナビバーが990以下であれが隠れる
     .for-small{
@@ -142,6 +148,9 @@ body {
 @media screen and (max-width: 990px){
     .for-pc{
         display: none;
+    }
+    .top-explain{
+        font-size: medium;
     }
     .graph-wrapper1{
         height:auto;
@@ -173,6 +182,7 @@ body {
     }
 
     .problem-image{
-        width:470px;
+        width:100%;
+        margin-left: S0px;
     }
 }

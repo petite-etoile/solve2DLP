@@ -17,7 +17,6 @@ body {
     height:150px;
     width: 100%;
     text-align: center;
-    font-size:xx-large;
 }
 
 
@@ -41,14 +40,12 @@ body {
 
 .problem-title{
     text-align: center;
-    font-size: 40px;
     padding-top: 25px;
     padding-bottom: 25px;
 }
 
 .problem{
     text-align: center;
-    font-size:30px;
     padding-top: 25px;
     padding-bottom: 25px;
 }
@@ -71,7 +68,6 @@ body {
 
 .format-title{
     text-align: center;
-    font-size: 40px;
     border-bottom: 2px solid #CCC;
     padding-top: 25px;
     padding-bottom: 25px;
@@ -79,14 +75,12 @@ body {
 
 .format{
     text-align: center;
-    font-size:30px;
     padding-top: 25px;
     padding-bottom: 25px;
     background-color: #CCC;
 }
 
 .format-explain{
-    font-size: 20px;
     padding-top: 30px;
     padding-bottom: 30px;
     padding-left: 30px;
@@ -101,7 +95,6 @@ body {
 }
 
 .QA-title{
-    font-size: xx-large;
     border-bottom: #EEE 2px solid;
     padding-bottom: 15px;
     margin-bottom: 15px;
@@ -122,9 +115,6 @@ body {
 
 //PC向け
 @media screen and (min-width: 991px){
-    .top-explain{
-        font-size: x-large;
-    }
     .graph-wrapper1{
         height:500px;
         width:550px;
@@ -135,9 +125,6 @@ body {
         height:450px;
         width:550px;
         float:left;
-    }
-    .Q, .A{
-        font-size: x-large;
     }
     .Question, .Answer{
         padding-left: 30px;
@@ -177,9 +164,6 @@ body {
     .for-pc{
         display: none;
     }
-    .top-explain{
-        font-size: medium;
-    }
     .graph-wrapper1{
         height:auto;
         width:auto;
@@ -201,9 +185,6 @@ body {
         width:100% !important;
     }
     
-    .Q, .A{
-        font-size: medium;
-    }
     .Question, .Answer{
         padding-left: 10px;
         font-size:small;

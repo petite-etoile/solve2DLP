@@ -1,4 +1,4 @@
-<div class="top-explain"> 2次元の線形計画問題の計算機です. 2次元線形計画問題については<a href="/howto">こちら</a>.
+<div class="top-explain x-large"> 2次元の線形計画問題の計算機です. 2次元線形計画問題については<a href="/howto">こちら</a>.
 </div>
 
 <%= form_tag({controller: "solve", action: "top"}, multipart: true) do%>
@@ -14,7 +14,7 @@
 
 
 <% if(@opt_messages)%>
-    <div class="opt-wrapper">
+    <div class="opt-wrapper xx-large">
         <% @opt_messages.each do |message|%>
             <%= message%> <br>
         <% end %>
@@ -57,7 +57,7 @@
         <% counter = 0 %>
         <% @data_for_plot.zip(@colors_for_plot) do |lines, colors| %>
             <div class="graph-wrapper2"> 
-                <div style="font-size:large"> phase  <%=counter %> </div>
+                <div class="large"> phase  <%=counter %> </div>
                 <%counter+=1%>
                 <%= line_chart(lines, colors:colors, max:@max_y, min:@min_y,  height:"400px", x_title: "x", y_title: "y", library:{pointRadius:0}, legend:"top") %>
             </div>

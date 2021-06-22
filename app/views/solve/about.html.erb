@@ -72,18 +72,21 @@
                 (<math><mi>m</mi><mo>≔</mo><mi>削除されていない直線の数</mi></math>)
             </li>
         </ul>
-
+        
+        <br>
         <div class="font-weight-bold"> 案1(×) </div>
         <div class="plan" >
             未削除の直線の添え字を配列で管理すると, 削除に毎回<math><mi>O</mi><mo>(</mo><mi>n</mi><mo>)</mo></math>かかるため, 
             全体の最悪計算量が<math><mi>O</mi><mo>(</mo><msup><mi>n</mi><mn>2</mn></msup><mo>)</mo></math>になってしまう.<br>
         </div>
+        <br>
         <div class="font-weight-bold"> 案2(×) </div>
         <div class="plan" >
             未削除の直線の添え字を配列ではなく, Setクラスで管理する. <br>
             Pythonのsetは, ハッシュテーブルを使っていて, 削除の最悪計算量が<math><mi>O</mi><mo>(</mo><mn>1</mn><mo>)</mo></math>であるが, 
             残念ながら, RubyのSetは削除の最悪計算量が<math><mi>O</mi><mo>(</mo><mi>log</mi><mi>n</mi><mo>)</mo></math>である.
         </div>
+        <br>
         <div class="font-weight-bold"> 案3(×) </div>
         <div class="plan" >
             次のような配列で管理する.
@@ -130,6 +133,8 @@
             <br>※全体のステップ数は<math><mi>O</mi><mo>(</mo><mi>log</mi><mi>n</mi><mo>)</mo></math>
             
         </div>
+        <br>
+
         <div class="font-weight-bold"> 案4(○) </div>
         <div class="plan" >
             未削除の直線の数<math><mi>m</mi></math>を保持する.<br>

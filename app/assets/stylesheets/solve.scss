@@ -108,10 +108,8 @@ body {
 
 
 //PC向け
-@media screen and (min-width: 481px){
-    .for-small{
-        display: none;
-    }
+@media screen and (min-width: 991px){
+    
     .graph-wrapper1{
         height:500px;
         width:550px;
@@ -133,10 +131,15 @@ body {
     .problem-image{
         width:550px;
     }
+    //ナビバーが990以下であれが隠れる
+    .for-small{
+        display: none;
+    }
 }
 
-//スマホ向け
-@media screen and (max-width: 480px){
+
+//スマホ/小さいウィンドウ向け
+@media screen and (max-width: 990px){
     .for-pc{
         display: none;
     }
